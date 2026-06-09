@@ -1,228 +1,266 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NAHK的胶囊 - Capsule Diary</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="icon" type="image/png" href="tx_circle.png" />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body class="min-h-screen transition-all duration-300 antialiased">
-    <div class="max-w-5xl mx-auto px-4 py-8">
-      <header
-        class="flex justify-between items-center mb-8 backdrop-blur-md py-2 sticky top-0 z-50"
-      >
-        <h1
-          class="text-2xl font-bold tracking-tight bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent flex items-center"
-        >
-          <i class="fa-solid fa-capsules mr-2"></i>NAHK的日记本
-        </h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NAHK的胶囊 - Capsule Diary</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link rel="icon" type="image/png" href="tx_circle.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="min-h-screen transition-all duration-300 antialiased">
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <header
+          class="flex justify-between items-center mb-8 backdrop-blur-md py-2 sticky top-0 z-50"
+  >
+    <h1
+            class="text-2xl font-bold tracking-tight bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent flex items-center"
+    >
+      <i class="fa-solid fa-capsules mr-2"></i>NAHK的日记本
+    </h1>
 
-        <div
-          class="flex items-center gap-2 p-1 bg-gray-100/80 dark:bg-gray-900/80 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 backdrop-blur-md theme-bar-container"
+    <div
+            class="flex items-center gap-2 p-1 bg-gray-100/80 dark:bg-gray-900/80 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 backdrop-blur-md theme-bar-container"
+    >
+      <button
+              id="theme-light"
+              class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
+      >
+        <i class="fa-solid fa-sun text-amber-500"></i>
+      </button>
+      <button
+              id="theme-dark"
+              class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
+      >
+        <i class="fa-solid fa-moon text-indigo-400"></i>
+      </button>
+      <button
+              id="theme-green"
+              class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
+      >
+        <i class="fa-solid fa-leaf text-emerald-500"></i>
+      </button>
+      <button
+              id="theme-purple"
+              class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
+      >
+        <i class="fa-solid fa-wand-magic-sparkles text-purple-500"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+    <aside class="space-y-6">
+      <div
+              class="theme-custom-card border rounded-3xl p-6 shadow-xs flex flex-col items-center text-center relative overflow-hidden group"
+      >
+        <div class="avatar-glow-wrapper mb-4">
+          <img
+                  src="file:///android_asset/tx.png"
+                  class="w-20 h-20 rounded-full object-cover"
+                  alt="Avatar"
+                  onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=NAHK';"
+          />
+        </div>
+        <h2
+                class="text-base font-bold tracking-tight mb-1"
+                style="color: var(--text-main)"
         >
-          <button
-            id="theme-light"
-            class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
+          NAHK
+        </h2>
+        <p
+                class="text-xs leading-relaxed max-w-[200px]"
+                style="color: var(--text-motto)"
+        >
+          把记忆封存在无尽的数字洪流里。
+        </p>
+        <div
+                class="w-full grid grid-cols-2 gap-2 mt-6 pt-5 border-t border-gray-100/60 dark:border-gray-800/30"
+        >
+          <a
+                  href="history.html"
+                  class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors group/btn"
           >
-            <i class="fa-solid fa-sun text-amber-500"></i>
-          </button>
+            <i
+                    class="fa-solid fa-images text-sm text-indigo-500 dark:text-indigo-400 group-hover/btn:scale-110 transition-transform mb-1"
+            ></i>
+            <span
+                    class="text-[10px] font-bold"
+                    style="color: var(--text-main)"
+            >全部记忆</span
+            >
+          </a>
           <button
-            id="theme-dark"
-            class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
+                  id="exportBtn"
+                  class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors group/btn cursor-pointer"
           >
-            <i class="fa-solid fa-moon text-indigo-400"></i>
-          </button>
-          <button
-            id="theme-green"
-            class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
-          >
-            <i class="fa-solid fa-leaf text-emerald-500"></i>
-          </button>
-          <button
-            id="theme-purple"
-            class="w-8 h-8 rounded-xl flex items-center justify-center text-xs opacity-60 hover:opacity-100 transition-all cursor-pointer"
-          >
-            <i class="fa-solid fa-wand-magic-sparkles text-purple-500"></i>
+            <i
+                    class="fa-solid fa-download text-sm text-emerald-500 dark:text-emerald-400 group-hover/btn:scale-110 transition-transform mb-1"
+            ></i>
+            <span
+                    class="text-[10px] font-bold"
+                    style="color: var(--text-main)"
+            >备份数据</span
+            >
           </button>
         </div>
-      </header>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-        <aside class="space-y-6">
-          <div
-            class="theme-custom-card border rounded-3xl p-6 shadow-xs flex flex-col items-center text-center relative overflow-hidden group"
-          >
-            <div class="avatar-glow-wrapper mb-4">
-              <img
-                src="tx.png"
-                class="w-20 h-20 rounded-full object-cover"
-                alt="Avatar"
-              />
-            </div>
-            <h2
-              class="text-base font-bold tracking-tight mb-1"
-              style="color: var(--text-main)"
+        <div
+                id="backup-status-container"
+                class="w-full mt-4 pt-3 border-t border-dashed border-gray-100/60 dark:border-gray-800/30 text-left px-2 flex flex-col gap-1.5"
+        >
+          <div class="flex items-center justify-between">
+                <span
+                        class="text-[11px] font-medium opacity-70"
+                        style="color: var(--text-motto)"
+                >系统版本</span
+                >
+            <span
+                    class="text-[10px] px-1.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 font-mono font-bold"
+            >v3.2</span
             >
-              NAHK
-            </h2>
-            <p
-              class="text-xs leading-relaxed max-w-[200px]"
-              style="color: var(--text-motto)"
-            >
-              把记忆封存在无尽的数字洪流里。
-            </p>
-            <div
-              class="w-full grid grid-cols-2 gap-2 mt-6 pt-5 border-t border-gray-100/60 dark:border-gray-800/30"
-            >
-              <a
-                href="history.html"
-                class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors group/btn"
-              >
-                <i
-                  class="fa-solid fa-images text-sm text-indigo-500 dark:text-indigo-400 group-hover/btn:scale-110 transition-transform mb-1"
-                ></i>
-                <span
-                  class="text-[10px] font-bold"
-                  style="color: var(--text-main)"
-                  >全部记忆</span
-                >
-              </a>
-              <button
-                id="exportBtn"
-                class="flex flex-col items-center justify-center p-3 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors group/btn cursor-pointer"
-              >
-                <i
-                  class="fa-solid fa-download text-sm text-emerald-500 dark:text-emerald-400 group-hover/btn:scale-110 transition-transform mb-1"
-                ></i>
-                <span
-                  class="text-[10px] font-bold"
-                  style="color: var(--text-main)"
-                  >备份数据</span
-                >
-              </button>
-            </div>
-            <!-- 备份状态提示区域 -->
-            <div
-              id="backup-status-container"
-              class="w-full mt-4 pt-3 border-t border-dashed border-gray-100/60 dark:border-gray-800/30 text-left px-2 flex flex-col gap-1.5"
-            >
-              <div class="flex items-center justify-between">
-                <span
-                  class="text-[11px] font-medium opacity-70"
-                  style="color: var(--text-motto)"
-                  >系统版本</span
-                >
-                <span
-                  class="text-[10px] px-1.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 font-mono font-bold"
-                  >v3.2</span
-                >
-              </div>
-
-              <div class="flex items-center justify-between">
-                <span
-                  class="text-[11px] font-medium opacity-70"
-                  style="color: var(--text-motto)"
-                  >上次备份</span
-                >
-                <span
-                  id="lastBackupTime"
-                  class="text-[11px] font-mono font-medium text-gray-400 dark:text-gray-500"
-                  >从未备份</span
-                >
-              </div>
-
-              <!-- 超过一星期未备份时，该标签会被 JS 移除 hidden 类名显示出来 -->
-              <div
-                id="backupWarning"
-                class="hidden mt-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 animate-pulse"
-              >
-                <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
-                <span class="text-[10px] font-bold tracking-wide"
-                  >已超过 7 天未备份，请及时导出！</span
-                >
-              </div>
-            </div>
           </div>
-        </aside>
 
-        <main class="md:col-span-2 space-y-6">
-          <section
-            class="theme-custom-card border rounded-3xl p-5 shadow-xs relative"
+          <div class="flex items-center justify-between">
+                <span
+                        class="text-[11px] font-medium opacity-70"
+                        style="color: var(--text-motto)"
+                >上次备份</span
+                >
+            <span
+                    id="lastBackupTime"
+                    class="text-[11px] font-mono font-medium text-gray-400 dark:text-gray-500"
+            >从未备份</span
+            >
+          </div>
+
+          <div
+                  id="backupWarning"
+                  class="hidden mt-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 animate-pulse"
           >
+            <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
+            <span class="text-[10px] font-bold tracking-wide"
+            >已超过 7 天未备份，请及时导出！</span
+            >
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="md:col-span-2 space-y-6">
+      <section
+              class="theme-custom-card border rounded-3xl p-5 shadow-xs relative"
+      >
             <textarea
-              id="diaryContent"
-              rows="4"
-              class="w-full bg-transparent resize-none focus:outline-none text-base placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed font-medium"
-              placeholder="今天有什么想记录的？..."
-              style="color: var(--text-diary)"
+                    id="diaryContent"
+                    rows="4"
+                    class="w-full bg-transparent resize-none focus:outline-none text-base placeholder-gray-400 dark:placeholder-gray-500 leading-relaxed font-medium"
+                    placeholder="今天有什么想记录的？..."
+                    style="color: var(--text-diary)"
             ></textarea>
 
-            <div
-              class="diary-photo-input-wrapper flex items-start gap-2.5 px-3 py-2 rounded-xl border mt-2 transition-all"
+        <div
+                class="diary-photo-input-wrapper flex items-start gap-2.5 px-3 py-2 rounded-xl border mt-2 transition-all"
+        >
+          <i
+                  class="fa-regular fa-image text-xs text-gray-400 shrink-0 pt-1"
+          ></i>
+          <textarea
+                  id="diaryPhoto"
+                  rows="2"
+                  class="w-full bg-transparent text-xs focus:outline-none placeholder-gray-400 dark:placeholder-gray-500 resize-none leading-relaxed"
+                  placeholder="可选：粘贴图片直链，支持多行、空格、逗号分隔"
+          ></textarea>
+        </div>
+
+        <div
+                class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-gray-800"
+        >
+          <span id="charCount" class="text-xs text-gray-400">0 字</span>
+
+          <div class="flex items-center gap-2">
+            <a
+                    href="https://www.superbed.cn/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="theme-custom-secondary-btn px-4 py-2.5 font-medium rounded-2xl text-sm transition-all flex items-center gap-2 cursor-pointer"
+                    title="生成图片普通链接"
             >
-              <i
-                class="fa-regular fa-image text-xs text-gray-400 shrink-0 pt-1"
-              ></i>
-              <textarea
-                id="diaryPhoto"
-                rows="2"
-                class="w-full bg-transparent text-xs focus:outline-none placeholder-gray-400 dark:placeholder-gray-500 resize-none leading-relaxed"
-                placeholder="可选：粘贴图片直链，支持多行、空格、逗号分隔"
-              ></textarea>
-            </div>
+              <i class="fa-solid fa-arrow-up-from-bracket text-xs"></i>
+              生成链接
+            </a>
 
-            <div
-              class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100 dark:border-gray-800"
+            <button
+                    id="saveBtn"
+                    class="theme-custom-btn px-6 py-2.5 text-white font-medium rounded-2xl text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
             >
-              <span id="charCount" class="text-xs text-gray-400">0 字</span>
+              <i class="fa-solid fa-paper-plane text-xs"></i> 记录下来
+            </button>
+          </div>
+        </div>
+      </section>
 
-              <div class="flex items-center gap-2">
-                <a
-                  href="https://www.superbed.cn/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="theme-custom-secondary-btn px-4 py-2.5 font-medium rounded-2xl text-sm transition-all flex items-center gap-2 cursor-pointer"
-                  title="生成图片普通链接"
-                >
-                  <i class="fa-solid fa-arrow-up-from-bracket text-xs"></i>
-                  生成链接
-                </a>
+      <section class="space-y-3.5">
+        <h2
+                class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1"
+        >
+          过往留痕
+        </h2>
+        <div id="diaryList" class="space-y-3">
+          <div id="loading" class="text-center py-12 text-gray-400">
+            <i
+                    class="fa-solid fa-circle-notch animate-spin text-sm mr-2"
+            ></i
+            >正在检索量子加密日志...
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
 
-                <button
-                  id="saveBtn"
-                  class="theme-custom-btn px-6 py-2.5 text-white font-medium rounded-2xl text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
-                >
-                  <i class="fa-solid fa-paper-plane text-xs"></i> 记录下来
-                </button>
-              </div>
-            </div>
-          </section>
+<div id="deleteModal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+  <div class="absolute inset-0 bg-gray-950/40 dark:bg-black/60 backdrop-blur-md transition-opacity" onclick="closeDeleteModal()"></div>
 
-          <section class="space-y-3.5">
-            <h2
-              class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider pl-1"
-            >
-              过往留痕
-            </h2>
-            <div id="diaryList" class="space-y-3">
-              <div id="loading" class="text-center py-12 text-gray-400">
-                <i
-                  class="fa-solid fa-circle-notch animate-spin text-sm mr-2"
-                ></i
-                >正在检索量子加密日志...
-              </div>
-            </div>
-          </section>
-        </main>
-      </div>
+  <div class="relative w-full max-w-sm bg-white/90 dark:bg-gray-900/90 border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-2xl scale-90 transition-transform duration-300 transform backdrop-blur-xl flex flex-col gap-4 text-center">
+    <div class="mx-auto w-12 h-12 rounded-2xl bg-red-500/10 dark:bg-red-500/20 text-red-500 flex items-center justify-center text-lg animate-pulse">
+      <i class="fa-solid fa-triangle-exclamation"></i>
     </div>
 
-    <script src="app.js"></script>
-  </body>
+    <div>
+      <h3 class="text-base font-bold text-gray-800 dark:text-gray-100 tracking-tight">确认抹去这段记忆？</h3>
+      <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1">此操作将使量子加密日志永久湮灭</p>
+    </div>
+
+    <div class="relative">
+      <input
+              type="password"
+              id="modalPwdInput"
+              placeholder="请输入核验密码..."
+              class="w-full px-4 py-3 text-sm text-center rounded-2xl border border-gray-200/60 dark:border-gray-800/80 bg-gray-50/50 dark:bg-gray-950/50 focus:outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500/80 transition-all text-gray-800 dark:text-gray-100 font-mono tracking-widest placeholder:tracking-normal placeholder:font-sans placeholder:text-gray-400"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mt-1">
+      <button
+              onclick="closeDeleteModal()"
+              class="px-4 py-2.5 text-xs font-bold rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-all cursor-pointer"
+      >
+        留存记忆
+      </button>
+      <button
+              id="modalConfirmBtn"
+              class="px-4 py-2.5 text-xs font-bold rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-sm hover:opacity-95 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-1"
+      >
+        确认抹去
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
 </html>

@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.View
+import android.webkit.JsPromptResult
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -68,6 +70,21 @@ class MainActivity : ComponentActivity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 applySystemBarFix()
+            }
+        }
+
+        // 🔥【新增修复】：配置 WebChromeClient 支持 JavaScript 的 prompt() 弹窗
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onJsPrompt(
+                view: WebView?,
+                url: String?,
+                message: String?,
+                defaultValue: String?,
+                result: JsPromptResult?
+            ): Boolean {
+                // 返回 false 让 Android 系统使用默认的对话框来接管并弹出密码输入框
+                // 这样你在点击删除时，就能正常弹窗，且输入的值能够正确传回给 Web 端 JS
+                return false
             }
         }
 
