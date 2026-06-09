@@ -1,0 +1,211 @@
+/* 让 Tailwind 4 识别我们手动控制的 .dark 类名 */
+@theme {
+  --variant-dark: .dark &;
+}
+
+/* 🎨 主题根变量定义 */
+:root {
+  --bg-main: #f9fafb;       /* gray-50 */
+  --bg-card: #ffffff;
+  --text-main: #111827;     /* gray-900 */
+  --border-color: #f3f4f6;  /* gray-100 */
+  --brand-color: #4f46e5;   /* indigo-600 */
+  --brand-hover: #4338ca;
+  --text-diary: #2d3748;    /* ☀️ 日记内容优雅深灰 */
+  --text-motto: #9ca3af;    /* ☀️ 浅灰座右铭 */
+  
+  /* 组件颜色绑定 */
+  --btn-export-bg: #f3f4f6;     /* 浅灰 */
+  --btn-export-text: #4b5563;
+  --theme-bar-bg: rgba(243, 244, 246, 0.8);
+  --theme-btn-active: #ffffff;
+  
+  /* 🚀 发送按钮：白天模式（靛蓝背景 + 纯白文字） */
+  --btn-submit-bg: #4f46e5;
+  --btn-submit-text: #ffffff;
+
+  /* 🆕 图片链接框颜色绑定（白天模式） */
+  --input-photo-bg: #f9fafb;
+  --input-photo-border: #e5e7eb;
+  --input-photo-text: #111827;
+}
+
+/* 🌙 暗黑模式变量重写 */
+.dark {
+  --bg-main: #030712;       /* gray-950 */
+  --bg-card: #0b0f19;       /* 极其深邃的卡片蓝黑 */
+  --text-main: #f3f4f6;     /* gray-100 */
+  --border-color: #1f2937;  /* gray-800 */
+  --brand-color: #6366f1;   /* indigo-500 */
+  --brand-hover: #4f46e5;
+  --text-diary: #e2e8f0;    /* 🌙 暗夜里易读的月白文本 */
+  --text-motto: #4b5563;    /* 🌙 暗灰座右铭 */
+
+  --btn-export-bg: #111827;
+  --btn-export-text: #9ca3af;
+  --theme-bar-bg: rgba(17, 24, 39, 0.8);
+  --theme-btn-active: #1f2937;
+
+  /* 🚀 发送按钮：暗黑模式下（极光靛蓝背景 + 纯白文字） */
+  --btn-submit-bg: #6366f1;
+  --btn-submit-text: #ffffff;
+
+  /* 🆕 图片链接框颜色绑定（暗黑模式） */
+  --input-photo-bg: #111827;
+  --input-photo-border: #1f2937;
+  --input-photo-text: #f3f4f6;
+}
+
+/* 🌿 治愈森林（青铜绿）主题 */
+.theme-green {
+  --bg-main: #f0fdf4;       /* green-50 */
+  --bg-card: #ffffff;
+  --text-main: #064e3b;     /* green-900 */
+  --border-color: #e6f4ea;
+  --brand-color: #10b981;   /* emerald-500 */
+  --brand-hover: #059669;
+  --text-diary: #115e59;    /* 深青绿日记字体 */
+  --text-motto: #86efac;
+
+  --btn-export-bg: #e6f4ea;
+  --btn-export-text: #047857;
+  --theme-bar-bg: rgba(230, 244, 234, 0.8);
+  --theme-btn-active: #ffffff;
+
+  /* 🚀 发送按钮：森林模式 */
+  --btn-submit-bg: #10b981;
+  --btn-submit-text: #ffffff;
+
+  /* 🆕 图片链接框颜色绑定（森林模式） */
+  --input-photo-bg: #f6fdf9;
+  --input-photo-border: #d1fae5;
+  --input-photo-text: #064e3b;
+}
+
+/* 🔮 赛博极光（梦幻紫）主题 */
+.theme-purple {
+  --bg-main: #faf5ff;       /* purple-50 */
+  --bg-card: #ffffff;
+  --text-main: #581c87;     /* purple-900 */
+  --border-color: #f3e8ff;
+  --brand-color: #a855f7;   /* purple-500 */
+  --brand-hover: #9333ea;
+  --text-diary: #6b21a8;    /* 深紫罗兰日记字 */
+  --text-motto: #d8b4fe;
+
+  --btn-export-bg: #f3e8ff;
+  --btn-export-text: #7e22ce;
+  --theme-bar-bg: rgba(243, 232, 255, 0.8);
+  --theme-btn-active: #ffffff;
+
+  /* 🚀 发送按钮：梦幻紫模式 */
+  --btn-submit-bg: #a855f7;
+  --btn-submit-text: #ffffff;
+
+  /* 🆕 图片链接框颜色绑定（梦幻紫模式） */
+  --input-photo-bg: #fdfafe;
+  --input-photo-border: #f3e8ff;
+  --input-photo-text: #581c87;
+}
+
+/* 全局基础核心渲染 */
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+/* 统一卡片基础皮肤 */
+.theme-custom-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+/* 🛠️ 图片链接输入框美化：完美融合主题色变量 */
+.diary-photo-input-wrapper {
+  background-color: var(--input-photo-bg);
+  border-color: var(--input-photo-border);
+}
+.diary-photo-input-wrapper input {
+  color: var(--input-photo-text);
+}
+.diary-photo-input-wrapper:focus-within {
+  border-color: var(--brand-color);
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
+}
+
+/* 统一主操作发送按钮样式 */
+.theme-custom-btn {
+  background-color: var(--brand-color);
+  color: var(--btn-submit-text);
+}
+.theme-custom-btn:hover {
+  background-color: var(--brand-hover);
+  transform: translateY(-1px);
+}
+.theme-custom-btn:active {
+  transform: translateY(0);
+}
+
+/* 🆕 生成链接（辅助按钮）样式设计：使用品牌色的轻量化透明质感 */
+.theme-custom-secondary-btn {
+  background-color: rgba(128, 128, 128, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--brand-color);
+}
+.theme-custom-secondary-btn:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+  border-color: var(--brand-color);
+  transform: translateY(-1px);
+}
+.theme-custom-secondary-btn:active {
+  transform: translateY(0);
+}
+
+/* 主题栏被选中的按钮高亮微调 */
+.theme-btn-active-style {
+  background-color: var(--theme-btn-active) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+  opacity: 1 !important;
+}
+
+/* 日记卡片基础排版隔离 */
+.diary-card {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+/* 滚动条整体美化 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* 主页大头像圆形流光边框效果 */
+.avatar-glow-wrapper {
+  padding: 3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.avatar-glow-wrapper:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+}
+
+/* 🚨 终极强左对齐重置规则 */
+.memory-grid, 
+.memory-grid > div, \r
+.theme-custom-card {
+  text-align: left !important;
+}
