@@ -1,0 +1,245 @@
+      const SUPABASE_URL = "https://gtgmqumuqxnuvoacsnxg.supabase.co";
+      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Z21xdW11cXhudXZvYWNzbnhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NTA3NzIsImV4cCI6MjA5NTUyNjc3Mn0.7sI9kmqymPr0LiZJodd4oZj3oF4GJYTewcYknVFxrwA";
+      const headers = { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` };
+
+      let lightboxPhotos = [];
+      let lightboxIndex = 0;
+
+      function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.classList.remove('dark', 'theme-green', 'theme-purple');
+        if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+        else if (savedTheme === 'green') document.documentElement.classList.add('theme-green');
+        else if (savedTheme === 'purple') document.documentElement.classList.add('theme-purple');
+        const btn = document.getElementById(`theme-${savedTheme}`);
+        if (btn) btn.classList.add('theme-btn-active-style');
+      }
+
+      document.querySelectorAll('.theme-bar-container button').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.theme-bar-container button').forEach(b => b.classList.remove('theme-btn-active-style'));
+          const theme = button.getAttribute('data-theme');
+          localStorage.setItem('theme', theme);
+          document.documentElement.classList.remove('dark', 'theme-green', 'theme-purple');
+          if (theme === 'dark') document.documentElement.classList.add('dark');
+          else if (theme === 'green') document.documentElement.classList.add('theme-green');
+          else if (theme === 'purple') document.documentElement.classList.add('theme-purple');
+          button.classList.add('theme-btn-active-style');
+        });
+      });
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[s]);
+      }
+
+      function formatToSlashTime(timeStr) {
+        if (!timeStr) return '';
+        let normalized = timeStr.replace(/-/g, '/');
+        let date = new Date(normalized);
+        if (isNaN(date.getTime())) return timeStr;
+        return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+      }
+
+      function parsePhotos(photoStr) {
+        if (!photoStr || photoStr === "NULL" || photoStr.trim() === "") return [];
+        return photoStr.split(/[,，]/).map(url => url.trim()).filter(url => url !== "");
+      }
+
+      // 🛠️ 时光长廊图片渲染函数（同步加大了倾斜弧度）
+      function renderHistoryGalleryHTML(photos) {
+        if (photos.length === 0) return "";
+
+        if (photos.length === 1) {
+            return `
+                <div class="max-w-[90%] aspect-4/3 mx-auto rounded-xl overflow-hidden border border-gray-100/50 dark:border-gray-800/30 mb-2.5 bg-gray-50/10 cursor-zoom-in" onclick="openGlobalLightbox(${JSON.stringify(photos).replace(/"/g, '&quot;')}, 0)">
+                  <img src="${escapeHtml(photos[0])}" class="w-full h-full object-cover" alt="时光剪影" referrerpolicy="no-referrer" />
+                </div>
+            `;
+        }
+
+        let imagesStackHtml = "";
+        photos.forEach((url, index) => {
+            let zIndex = 30 - index;
+            let transformClass = "scale-100 z-30 opacity-100";
+            // 🔥 这里的旋转和横向位移同样做了显著增幅放大
+            if (index === 1) transformClass = "rotate-[9deg] translate-x-3.5 translate-y-1 scale-95 z-20 opacity-85";
+            if (index === 2) transformClass = "rotate-[-9deg] -translate-x-3 translate-y-2 scale-90 z-10 opacity-70";
+            if (index > 2) transformClass = "hidden";
+
+            imagesStackHtml += `
+                <div data-index="${index}" class="photo-stack-item absolute inset-0 w-full h-full transition-all duration-300 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 ${transformClass}">
+                    <img src="${escapeHtml(url)}" class="w-full h-full object-cover cursor-zoom-in" alt="配图" referrerpolicy="no-referrer" onclick="event.stopPropagation(); openGlobalLightbox(${JSON.stringify(photos).replace(/"/g, '&quot;')}, ${index})" />
+                </div>
+            `;
+        });
+
+        return `
+            <div class="relative max-w-[80%] aspect-[4/3] mx-auto mt-2 select-none group/gallery" style="margin-bottom: 24px;">
+                <div class="w-full h-full relative">
+                    ${imagesStackHtml}
+                </div>
+                <button onclick="event.stopPropagation(); switchStackPhoto(this, -1)" class="absolute left-1 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[9px] backdrop-blur-xs opacity-0 group-hover/gallery:opacity-100 z-40 cursor-pointer transition-opacity">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button onclick="event.stopPropagation(); switchStackPhoto(this, 1)" class="absolute right-1 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[9px] backdrop-blur-xs opacity-0 group-hover/gallery:opacity-100 z-40 cursor-pointer transition-opacity">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <div class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-md bg-black/50 text-[8px] text-white font-mono tracking-tight z-40 scale-90">
+                    <span class="active-idx">1</span>/${photos.length}
+                </div>
+            </div>
+        `;
+      }
+
+// 优化后的图片切换逻辑，同时支持按钮点击与触摸滑动
+window.switchStackPhoto = function(btnOrContainer, dir) {
+    // 兼容处理：如果传入的是按钮则找父级，如果是容器则直接使用
+    const galleryContainer = btnOrContainer.classList && btnOrContainer.classList.contains('group/gallery')
+        ? btnOrContainer
+        : btnOrContainer.parentElement;
+
+    const items = galleryContainer.querySelectorAll('.photo-stack-item');
+    const idxBadge = galleryContainer.querySelector('.active-idx');
+    if (items.length <= 1) return;
+
+    let currentActiveIdx = 0;
+    items.forEach((item, i) => { if (item.classList.contains('z-30')) currentActiveIdx = i; });
+
+    let nextActiveIdx = (currentActiveIdx + dir + items.length) % items.length;
+    idxBadge.textContent = nextActiveIdx + 1;
+
+    items.forEach((item, index) => {
+        item.className = "photo-stack-item absolute inset-0 w-full h-full transition-all duration-300 rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-100 dark:bg-gray-900";
+        let relativePos = (index - nextActiveIdx + items.length) % items.length;
+        if (relativePos === 0) item.classList.add('scale-100', 'z-30', 'opacity-100', 'rotate-0');
+        else if (relativePos === 1) item.classList.add('rotate-[9deg]', 'translate-x-3.5', 'translate-y-1', 'scale-95', 'z-20', 'opacity-85');
+        else if (relativePos === 2) item.classList.add('rotate-[-9deg]', '-translate-x-3', 'translate-y-2', 'scale-90', 'z-10', 'opacity-70');
+        else item.classList.add('hidden');
+    });
+};
+
+// 新增：为多图卡片绑定触摸滑动事件
+function bindSwipeEvent(container) {
+    let touchStartX = 0;
+
+    // 记录手指按下时的 X 坐标
+    container.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    // 记录手指离开时的 X 坐标并计算滑动手势
+    container.addEventListener('touchend', e => {
+        let touchEndX = e.changedTouches[0].screenX;
+        let diff = touchEndX - touchStartX;
+
+        // 当滑动距离绝对值大于 50 像素时触发切换
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                window.switchStackPhoto(container, -1); // 向右划，看上一张
+            } else {
+                window.switchStackPhoto(container, 1);  // 向左划，看下一张
+            }
+        }
+    }, { passive: true });
+}
+
+      window.openGlobalLightbox = function(photos, index) {
+        lightboxPhotos = photos;
+        lightboxIndex = index;
+        let lightbox = document.getElementById('globalLightbox');
+        if (!lightbox) {
+            lightbox = document.createElement('div');
+            lightbox.id = 'globalLightbox';
+            lightbox.className = "fixed inset-0 bg-black/90 backdrop-blur-xl z-[9999] flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 select-none";
+            lightbox.innerHTML = `
+                <button onclick="closeGlobalLightbox()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm transition-all cursor-pointer z-50"><i class="fa-solid fa-xmark"></i></button>
+                <div class="relative w-full max-w-4xl max-h-[80vh] px-12 flex items-center justify-center">
+                    <button onclick="changeLightboxPhoto(-1)" class="absolute left-4 w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center text-sm transition-all cursor-pointer"><i class="fa-solid fa-chevron-left"></i></button>
+                    <img id="lightboxImg" src="" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-white/5" referrerpolicy="no-referrer" />
+                    <button onclick="changeLightboxPhoto(1)" class="absolute right-4 w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center text-sm transition-all cursor-pointer"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div id="lightboxIndicator" class="mt-4 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-gray-300">1 / 1</div>
+            `;
+            document.body.appendChild(lightbox);
+            window.addEventListener('keydown', (e) => {
+                if (document.getElementById('globalLightbox').classList.contains('pointer-events-none')) return;
+                if (e.key === 'Escape') closeGlobalLightbox();
+                if (e.key === 'ArrowLeft') changeLightboxPhoto(-1);
+                if (e.key === 'ArrowRight') changeLightboxPhoto(1);
+            });
+        }
+        updateLightboxDOM();
+        lightbox.classList.remove('pointer-events-none', 'opacity-0');
+      };
+
+      window.closeGlobalLightbox = function() {
+        document.getElementById('globalLightbox').classList.add('pointer-events-none', 'opacity-0');
+      };
+
+      window.changeLightboxPhoto = function(dir) {
+        if (lightboxPhotos.length <= 1) return;
+        lightboxIndex = (lightboxIndex + dir + lightboxPhotos.length) % lightboxPhotos.length;
+        updateLightboxDOM();
+      };
+
+      function updateLightboxDOM() {
+        document.getElementById('lightboxImg').src = lightboxPhotos[lightboxIndex];
+        document.getElementById('lightboxIndicator').textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
+      }
+
+      const galleryContainer = document.getElementById('memoryGallery');
+      const loadingEl = document.getElementById('galleryLoading');
+
+      async function loadGallery() {
+        try {
+          const response = await fetch(`${SUPABASE_URL}/rest/v1/diary`, { method: 'GET', headers: headers });
+          if (!response.ok) throw new Error('同步云端回忆失败');
+          let list = await response.json();
+
+          if (loadingEl) loadingEl.remove();
+          galleryContainer.innerHTML = '';
+
+          if (list.length === 0) {
+            galleryContainer.innerHTML = `<div class="w-full theme-custom-card text-center py-20 border rounded-3xl text-gray-400"><i class="fa-regular fa-image text-3xl mb-3 block text-gray-300"></i>时间长廊空无一物，去写下第一篇故事吧。</div>`;
+            return;
+          }
+
+          list.sort((a, b) => new Date(b.time.replace(/-/g, '/')).getTime() - new Date(a.time.replace(/-/g, '/')).getTime());
+
+list.forEach(item => {
+            const article = document.createElement('article');
+            article.className = "waterfall-item theme-custom-card border rounded-3xl p-3.5 shadow-xs transition-all hover:shadow-md hover:-translate-y-0.5 duration-300 relative overflow-hidden";
+
+            const photos = parsePhotos(item.photo);
+            const imageHtml = renderHistoryGalleryHTML(photos);
+
+            article.innerHTML = `
+              ${imageHtml}
+              <div class="space-y-2">
+                <p class="text-xs leading-relaxed whitespace-pre-wrap" style="color: var(--text-diary); font-family: system-ui;">${escapeHtml(item.content)}</p>
+                <div class="flex justify-between items-center pt-2 border-t border-gray-100/50 dark:border-gray-800/10 text-[9px] text-gray-400 font-mono">
+                  <span class="font-bold flex items-center" style="color: var(--text-main);"><i class="fa-regular fa-user mr-1 text-[8px]"></i>${escapeHtml(item.nickname || 'NAHK')}</span>
+                  <span class="flex items-center"><i class="fa-regular fa-calendar mr-1 text-[8px]"></i>${formatToSlashTime(item.time)}</span>
+                </div>
+              </div>
+            `;
+            galleryContainer.appendChild(article);
+
+            // 【核心修改】成功挂载到 DOM 后，如果是多图卡片，为其绑定滑动事件
+            if (photos.length > 1) {
+              const galleryEl = article.querySelector('.group\\/gallery');
+              if (galleryEl) {
+                bindSwipeEvent(galleryEl);
+              }
+            }
+          });
+
+        } catch (e) {
+          if (loadingEl) {
+            loadingEl.innerHTML = `<div class="theme-custom-card max-w-lg mx-auto p-6 border rounded-3xl"><h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-1">唤醒记忆失败</h3><p class="text-xs text-red-500 break-all">${e.message}</p></div>`;
+          }
+        }
+      }
+
+      initTheme();
+      loadGallery();
